@@ -1,8 +1,8 @@
 import {
-  HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Wallets } from './entities/wallets.entity';
@@ -12,6 +12,11 @@ import { WalletCurrency } from 'src/types/wallet.type';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from 'src/auth/auth.service';
 import { getToken } from 'src/common/get-token';
+import { TransferService } from './transfer/transfer.service';
+
+import * as AsyncLock from 'async-lock';
+import { DepositsService } from 'src/deposits/deposits.service';
+const lock = new AsyncLock();
 
 @Injectable()
 export class WalletsService {
@@ -20,6 +25,7 @@ export class WalletsService {
     private readonly walletRepository: Repository<Wallets>,
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
+    private readonly depositsService: DepositsService,
   ) {}
 
   async createWallet(currency: string, auth: string): Promise<Wallets> {
@@ -73,5 +79,33 @@ export class WalletsService {
     return wallet;
   }
 
-  async fundWallet(amount){}
+  async debitWallet(wallet: Wallets, amount: number) {
+    return lock.acquire(`wallet-${wallet.address}`, async () => {
+      try {
+        wallet.balance -= amount;
+        await this.walletRepository.save(wallet);
+      } finally {
+        lock.release(`wallet-${wallet.address}`);
+      }
+    });
+  }
+  async creditWallet(wallet: Wallets, amount: number) {
+    return lock.acquire(`wallet-${wallet.address}`, async () => {
+      try {
+        wallet.balance += amount;
+        await this.walletRepository.save(wallet);
+      } finally {
+        lock.release(`wallet-${wallet.address}`);
+      }
+    });
+  }
+
+  async fundWallet(amount: number, walletAddress: string) {
+    const wallet = await this.findByAddress(walletAddress);
+    if (!wallet) {
+      throw new NotFoundException('Invalid wallet address');
+    }
+
+    return this.depositsService.makeDeposit(amount, wallet);
+  }
 }

@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin/admin.controller';
-import { PaymentsController } from './payments/payments.controller';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WalletsModule } from './wallets/wallets.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { DepositsModule } from './deposits/deposits.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    UsersModule,
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -23,8 +23,10 @@ import { AuthModule } from './auth/auth.module';
     }),
     WalletsModule,
     AuthModule,
+    DepositsModule,
+    UsersModule,
   ],
-  controllers: [AdminController, PaymentsController],
+  controllers: [AdminController],
   providers: [],
 })
 export class AppModule {}

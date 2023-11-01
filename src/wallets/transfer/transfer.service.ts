@@ -30,6 +30,11 @@ export class TransferService {
       ? Status.ACCEPTED
       : Status.PENDING;
 
+    if (status === Status.ACCEPTED) {
+      await this.walletService.debitWallet(sendersWallet, amount);
+      await this.walletService.creditWallet(receiversWallet, amount);
+    }
+
     const transferEntity = this.transferRepository.create({
       sendersWallet,
       recipientWallet: receiversWallet,

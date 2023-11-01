@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Transfers } from './transfer.entity';
+import { Deposits } from 'src/deposits/entities/deposits.entity';
 @Entity()
 export class Wallets {
   @PrimaryGeneratedColumn()
@@ -26,4 +27,6 @@ export class Wallets {
 
   @OneToMany(() => Transfers, (transfer) => transfer.recipientWallet)
   receivedTransfers: Transfers[];
+  @ManyToOne(() => Deposits, (deposit) => deposit.wallet)
+  deposits: Deposits[];
 }
