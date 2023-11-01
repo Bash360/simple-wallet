@@ -44,4 +44,8 @@ export class UsersService {
 
     return this.authService.login(user);
   }
+
+  async findOne(id: number): Promise<Users> {
+    return await this.usersRepository.findOneBy({ id });
+  }
 }

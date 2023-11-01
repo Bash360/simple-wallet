@@ -1,7 +1,13 @@
 import { WalletCurrency } from 'src/types/wallet.type';
 import { Users } from 'src/users/entities/users.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Transfers } from './transfer.entity';
 @Entity()
 export class Wallets {
   @PrimaryGeneratedColumn()
@@ -14,4 +20,10 @@ export class Wallets {
   currency: WalletCurrency;
   @Column({ default: 0 })
   balance: number;
+
+  @OneToMany(() => Transfers, (transfer) => transfer.sendersWallet)
+  sentTransfers: Transfers[];
+
+  @OneToMany(() => Transfers, (transfer) => transfer.recipientWallet)
+  receivedTransfers: Transfers[];
 }
