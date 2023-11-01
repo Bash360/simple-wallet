@@ -8,9 +8,7 @@ import { Wallets } from 'src/wallets/entities/wallets.entity';
 import * as crypto from 'crypto';
 import { Status } from 'src/types/status.type';
 import { WalletsService } from 'src/wallets/wallets.service';
-const paystack = new Paystack(
-  'sk_test_42fdc90a9a9b790706ea416e40bc1a2817e31263',
-);
+const paystack = new Paystack(process.env.PAYSTACK_SECRET);
 @Injectable()
 export class DepositsService {
   constructor(
@@ -41,7 +39,7 @@ export class DepositsService {
 
   async updateDeposit(body, signature: string) {
     const hash = crypto
-      .createHmac('sha512', 'sk_test_42fdc90a9a9b790706ea416e40bc1a2817e31263')
+      .createHmac('sha512', process.env.PAYSTACK_SECRET)
       .update(JSON.stringify(body))
       .digest('hex');
     if (hash === signature) {
