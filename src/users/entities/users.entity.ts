@@ -11,7 +11,7 @@ export class Users {
   @Column()
   password: string;
   @Column({ default: Role.USER })
-  userRole: Role;
+  role: Role;
 
   @OneToMany((type) => Wallets, (wallet) => wallet.user)
   wallets: Wallets[];

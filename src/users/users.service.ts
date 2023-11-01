@@ -3,12 +3,14 @@ import { Repository } from 'typeorm';
 import { Users } from './entities/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
+    private readonly authService: AuthService,
   ) {}
 
   async createUser(phoneNumber: string, password: string) {
@@ -19,7 +21,8 @@ export class UsersService {
         password: passwordHash,
       });
 
-      return await this.usersRepository.save(user);
+      const newUser = await this.usersRepository.save(user);
+      return this.authService.login(newUser);
     } catch (error) {
       throw new HttpException(
         'user with Phone Number already exist',
@@ -27,10 +30,7 @@ export class UsersService {
       );
     }
   }
-  async authenticateUser(
-    phoneNumber: string,
-    password: string,
-  ): Promise<Users> {
+  async authenticateUser(phoneNumber: string, password: string) {
     const user = await this.usersRepository.findOneBy({ phoneNumber });
     if (!user) throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     const hash = user.password;
@@ -42,6 +42,6 @@ export class UsersService {
       );
     }
 
-    return user;
+    return this.authService.login(user);
   }
 }

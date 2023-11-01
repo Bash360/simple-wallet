@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WalletsModule } from './wallets/wallets.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
     }),
     WalletsModule,
+    AuthModule,
   ],
   controllers: [AdminController, PaymentsController],
   providers: [],
