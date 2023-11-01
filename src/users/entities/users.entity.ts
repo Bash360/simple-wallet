@@ -1,5 +1,6 @@
 import { Role } from 'src/types/role.type';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Wallets } from 'src/wallets/entities/wallets.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Users {
@@ -11,4 +12,7 @@ export class Users {
   password: string;
   @Column({ default: Role.USER })
   userRole: Role;
+
+  @OneToMany((type) => Wallets, (wallet) => wallet.user)
+  wallets: Wallets[];
 }

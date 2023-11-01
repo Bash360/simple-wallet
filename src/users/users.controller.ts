@@ -16,12 +16,15 @@ export class UsersController {
 
   @Post('create')
   addUser(@Body() createUsersDTO: CreateUsersDTO) {
-    return 'user created';
+    const { phoneNumber, password } = createUsersDTO;
+
+    return this.usersService.createUser(phoneNumber, password);
   }
 
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  login(loginDTO: LoginDTO) {
-    return 'logged in';
+  login(@Body() loginDTO: LoginDTO) {
+    const { phoneNumber, password } = loginDTO;
+    return this.usersService.authenticateUser(phoneNumber, password);
   }
 }
