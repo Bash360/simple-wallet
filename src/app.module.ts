@@ -17,7 +17,7 @@ import { DepositsModule } from './deposits/deposits.module';
       port: parseInt(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
-      database: 'simple-wallet',
+      database: process.env.DATABASE,
       autoLoadEntities: true,
       synchronize: true,
     }),
