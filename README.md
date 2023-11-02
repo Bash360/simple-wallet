@@ -21,7 +21,6 @@ Mark Bashir
 
 - <http://localhost:3000/api/v1>
 
-
 # HOW TO Run locally
 
 - open your terminal or cmd
