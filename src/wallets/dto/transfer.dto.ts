@@ -1,8 +1,10 @@
 import { IsNumber, IsPositive, IsString } from 'class-validator';
 
-export class FundWalletDTO {
+export class TransferDTO {
   @IsString()
-  walletAddress: string;
+  sendersWalletAddress: string;
+  @IsString()
+  recipientsWalletAddress: string;
   @IsNumber()
   @IsPositive()
   amount: number;

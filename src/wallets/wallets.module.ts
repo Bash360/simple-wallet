@@ -6,7 +6,7 @@ import { Wallets } from './entities/wallets.entity';
 import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { Transfers } from './entities/transfer.entity';
-import { TransferService } from './transfer/transfer.service';
+import { TransferService } from './transfer.service';
 import { DepositsModule } from 'src/deposits/deposits.module';
 
 @Module({

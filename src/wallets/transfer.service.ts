@@ -1,9 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { WalletsService } from '../wallets.service';
-import { Transfers } from '../entities/transfer.entity';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
+import { WalletsService } from './wallets.service';
+import { Transfers } from './entities/transfer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Wallets } from '../entities/wallets.entity';
+import { Wallets } from './entities/wallets.entity';
 import { Status } from 'src/types/status.type';
 
 @Injectable()
@@ -11,6 +17,7 @@ export class TransferService {
   constructor(
     @InjectRepository(Transfers)
     private readonly transferRepository: Repository<Transfers>,
+    @Inject(forwardRef(() => WalletsService))
     private readonly walletService: WalletsService,
   ) {}
 

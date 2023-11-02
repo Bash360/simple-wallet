@@ -12,6 +12,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { CreateWalletDTO } from './dto/create-wallet.dto';
 import { Wallets } from './entities/wallets.entity';
 import { FundWalletDTO } from './dto/fund-wallet.dto';
+import { TransferDTO } from './dto/transfer.dto';
 
 @Controller('wallets')
 export class WalletController {
@@ -32,6 +33,17 @@ export class WalletController {
     return this.walletService.fundWallet(
       fundWalletDTO.amount,
       fundWalletDTO.walletAddress,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('transfer')
+  @HttpCode(HttpStatus.OK)
+  async transferToWallet(@Body() transferDTO: TransferDTO) {
+    return this.walletService.transferToWallet(
+      transferDTO.sendersWalletAddress,
+      transferDTO.recipientsWalletAddress,
+      transferDTO.amount,
     );
   }
 }

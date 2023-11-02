@@ -12,7 +12,7 @@ import { WalletCurrency } from 'src/types/wallet.type';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from 'src/auth/auth.service';
 import { getToken } from 'src/common/get-token';
-import { TransferService } from './transfer/transfer.service';
+import { TransferService } from './transfer.service';
 import { DepositsService } from 'src/deposits/deposits.service';
 import { Mutex } from 'async-mutex';
 
@@ -25,6 +25,7 @@ export class WalletsService {
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
     private readonly depositsService: DepositsService,
+    private readonly transferService: TransferService,
   ) {}
 
   async createWallet(currency: string, auth: string): Promise<Wallets> {
@@ -109,5 +110,17 @@ export class WalletsService {
     }
 
     return this.depositsService.makeDeposit(amount, wallet);
+  }
+
+  async transferToWallet(
+    sendersAddress: string,
+    receiversAddress: string,
+    amount: number,
+  ) {
+    return this.transferService.addTransfer(
+      sendersAddress,
+      receiversAddress,
+      amount,
+    );
   }
 }
