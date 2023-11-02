@@ -3,7 +3,6 @@ import { DepositsService } from 'src/deposits/deposits.service';
 import { Status } from 'src/types/status.type';
 import { TransferService } from 'src/wallets/transfer.service';
 
-
 @Injectable()
 export class AdminService {
   constructor(
@@ -24,12 +23,10 @@ export class AdminService {
   }
 
   async getTransferByDate(startDate: Date, endDate: Date) {
-    return this.depositService.findDepositsByDate(startDate, endDate);
+    return this.transferService.findTransfersByDate(startDate, endDate);
   }
 
   async getDepositsByDate(startDate: Date, endDate: Date) {
     return this.depositService.findDepositsByDate(startDate, endDate);
   }
-
-  
 }

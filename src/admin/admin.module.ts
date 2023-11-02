@@ -16,5 +16,6 @@ import { DepositsModule } from 'src/deposits/deposits.module';
   ],
   providers: [AdminService],
   controllers: [AdminController],
+  exports: [AdminService],
 })
 export class AdminModule {}
