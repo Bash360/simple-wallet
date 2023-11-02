@@ -1,7 +1,13 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Deposits } from './entities/deposits.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import Paystack from '@paystack/paystack-sdk';
 import { generateRandomChar } from 'src/utils/generate-char';
 import { Wallets } from 'src/wallets/entities/wallets.entity';
@@ -24,7 +30,9 @@ export class DepositsService {
       email: 'example@gmail.com',
       amount: amount * 100,
       reference,
+      callback_url: 'http://localhost:3000/api/v1/deposits/redirect',
     });
+
     if (response.status) {
       const depositEntity = this.depositsRepository.create({
         wallet,
@@ -49,11 +57,9 @@ export class DepositsService {
     const data = body.data;
     switch (event) {
       case 'charge.success':
-        const depositPreload = await this.depositsRepository.preload({
-          reference: data.reference,
-          status: Status.ACCEPTED,
-        });
-        const deposit = await this.depositsRepository.save(depositPreload);
+        const deposit = await this.getDepositByReference(data.reference);
+        deposit.status = Status.ACCEPTED;
+        await this.depositsRepository.save(deposit);
         await this.walletService.creditWallet(deposit.wallet, deposit.amount);
         break;
       case 'charge.failure':
@@ -66,5 +72,27 @@ export class DepositsService {
       default:
         break;
     }
+  }
+
+  private async getDepositByReference(reference: string) {
+    const queryBuilder: SelectQueryBuilder<Deposits> = this.depositsRepository
+      .createQueryBuilder('deposit')
+      .where('deposit.reference = :reference', { reference })
+      .leftJoinAndSelect('deposit.wallet', 'wallet');
+
+    return queryBuilder.getOne();
+  }
+
+  async redirect(ref: string) {
+    const deposit = await this.getDepositByReference(ref);
+    if (deposit.status === Status.ACCEPTED) {
+      throw new HttpException(
+        'invalid reference cant fund twice',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    deposit.status = Status.ACCEPTED;
+    await this.depositsRepository.save(deposit);
+    await this.walletService.creditWallet(deposit.wallet, deposit.amount);
   }
 }

@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,7 +15,7 @@ export class Deposits {
   id: number;
   @Column()
   reference: string;
-  @OneToMany(() => Wallets, (wallet) => wallet.deposits)
+  @ManyToOne(() => Wallets, (wallet) => wallet.deposits)
   wallet: Wallets;
   @Column()
   amount: number;

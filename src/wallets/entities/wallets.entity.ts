@@ -27,6 +27,6 @@ export class Wallets {
 
   @OneToMany(() => Transfers, (transfer) => transfer.recipientWallet)
   receivedTransfers: Transfers[];
-  @ManyToOne(() => Deposits, (deposit) => deposit.wallet)
+  @OneToMany(() => Deposits, (deposit) => deposit.wallet)
   deposits: Deposits[];
 }

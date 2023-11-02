@@ -13,13 +13,12 @@ import { UsersService } from 'src/users/users.service';
 import { AuthService } from 'src/auth/auth.service';
 import { getToken } from 'src/common/get-token';
 import { TransferService } from './transfer/transfer.service';
-
-import * as AsyncLock from 'async-lock';
 import { DepositsService } from 'src/deposits/deposits.service';
-const lock = new AsyncLock();
+import { Mutex } from 'async-mutex';
 
 @Injectable()
 export class WalletsService {
+  private walletMutex = new Mutex();
   constructor(
     @InjectRepository(Wallets)
     private readonly walletRepository: Repository<Wallets>,
@@ -80,24 +79,27 @@ export class WalletsService {
   }
 
   async debitWallet(wallet: Wallets, amount: number) {
-    return lock.acquire(`wallet-${wallet.address}`, async () => {
-      try {
-        wallet.balance -= amount;
-        await this.walletRepository.save(wallet);
-      } finally {
-        lock.release(`wallet-${wallet.address}`);
-      }
-    });
+    const release = await this.walletMutex.acquire();
+    try {
+      wallet.balance -= amount;
+      await this.walletRepository.save(wallet);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      release();
+    }
   }
+
   async creditWallet(wallet: Wallets, amount: number) {
-    return lock.acquire(`wallet-${wallet.address}`, async () => {
-      try {
-        wallet.balance += amount;
-        await this.walletRepository.save(wallet);
-      } finally {
-        lock.release(`wallet-${wallet.address}`);
-      }
-    });
+    const release = await this.walletMutex.acquire();
+    try {
+      wallet.balance += amount;
+      await this.walletRepository.save(wallet);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      release();
+    }
   }
 
   async fundWallet(amount: number, walletAddress: string) {
