@@ -69,9 +69,12 @@ export class CronService {
 
     const rootDirectory = path.join(__dirname, '..', '..');
     const summaryDirectory = path.join(rootDirectory, 'summary');
+
+    if (!fs.existsSync(summaryDirectory)) {
+      fs.mkdirSync(summaryDirectory);
+    }
     const filePath = path.join(summaryDirectory, filename);
 
     await workbook.xlsx.writeFile(filePath);
   }
-
 }
