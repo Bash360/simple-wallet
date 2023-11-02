@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -20,6 +22,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @Post('transfers/approve/:transferId')
+  @HttpCode(HttpStatus.OK)
   async approveTransfer(@Param('transferId', ParseIntPipe) transferId: number) {
     return this.adminService.updateTransfer(transferId, Status.ACCEPTED);
   }
@@ -27,6 +30,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @Post('transfers/reject/:transferId')
+  @HttpCode(HttpStatus.OK)
   async rejectTransfer(@Param('transferId', ParseIntPipe) transferId: number) {
     return this.adminService.updateTransfer(transferId, Status.REJECTED);
   }
@@ -46,6 +50,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
   @Post('deposits/bydate')
+  @HttpCode(HttpStatus.OK)
   async getDepositsByDate(@Body() getDepositDTO: GetDepositDTO) {
     const { startDate, endDate } = getDepositDTO;
     this.adminService.getDepositsByDate(startDate, endDate);
