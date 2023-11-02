@@ -22,8 +22,6 @@ Mark Bashir
 - <http://localhost:3000/api/v1>
 
 
-
-
 # HOW TO Run locally
 
 - open your terminal or cmd
@@ -31,7 +29,3 @@ Mark Bashir
 - run npm install to install dependencies
 - run docker compose up -d  (install docker if not already installed)
 - run npm run start to start application it listens on port 3000
-
-
-
-git push
