@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { Transfers } from './entities/transfer.entity';
-import { Repository } from 'typeorm';
+import { Between, MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wallets } from './entities/wallets.entity';
 import { Status } from 'src/types/status.type';
@@ -84,5 +84,35 @@ export class TransferService {
 
   private allowedAmount(amount: number) {
     return amount <= 1_000_000;
+  }
+
+  async transfersForApproval() {
+    const transfers = await this.transferRepository.find({
+      where: { status: Status.PENDING, amount: MoreThan(1_000_000) },
+    });
+
+    return transfers;
+  }
+
+  async findAllTransfers() {
+    return this.transferRepository.find();
+  }
+
+  async update(transferId: number, status: Status) {
+    const transfer = await this.transferRepository.findOneBy({
+      id: transferId,
+    });
+    transfer.status = status;
+    this.transferRepository.save(transfer);
+  }
+
+  async findTransfersByDate(startDate, endDate) {
+    const transfers = await this.transferRepository.find({
+      where: {
+        createdAt: Between(startDate, endDate),
+      },
+    });
+
+    return transfers;
   }
 }

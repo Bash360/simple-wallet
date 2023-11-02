@@ -18,6 +18,6 @@ import { DepositsModule } from 'src/deposits/deposits.module';
   ],
   controllers: [WalletController],
   providers: [WalletsService, TransferService],
-  exports: [WalletsService],
+  exports: [WalletsService, TransferService],
 })
 export class WalletsModule {}

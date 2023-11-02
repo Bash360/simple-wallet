@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Deposits } from './entities/deposits.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Between, Repository, SelectQueryBuilder } from 'typeorm';
 import Paystack from '@paystack/paystack-sdk';
 import { generateRandomChar } from 'src/utils/generate-char';
 import { Wallets } from 'src/wallets/entities/wallets.entity';
@@ -94,5 +94,15 @@ export class DepositsService {
     deposit.status = Status.ACCEPTED;
     await this.depositsRepository.save(deposit);
     await this.walletService.creditWallet(deposit.wallet, deposit.amount);
+  }
+
+  async findDepositsByDate(startDate, endDate) {
+    const deposits = await this.depositsRepository.find({
+      where: {
+        createdAt: Between(startDate, endDate),
+      },
+    });
+
+    return deposits;
   }
 }

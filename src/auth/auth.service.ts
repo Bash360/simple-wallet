@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from 'src/users/entities/users.entity';
 
@@ -16,8 +16,12 @@ export class AuthService {
   }
 
   async extract(token) {
-    return await this.jwtService.verifyAsync(token, {
-      secret: process.env.SECRET,
-    });
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: process.env.SECRET,
+      });
+    } catch (error) {
+      throw new HttpException('token expired', HttpStatus.BAD_REQUEST);
+    }
   }
 }

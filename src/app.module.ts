@@ -6,6 +6,7 @@ import { WalletsModule } from './wallets/wallets.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { DepositsModule } from './deposits/deposits.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -25,8 +26,9 @@ import { DepositsModule } from './deposits/deposits.module';
     AuthModule,
     DepositsModule,
     UsersModule,
+    AdminModule,
   ],
-  controllers: [AdminController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}
