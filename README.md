@@ -1,11 +1,11 @@
 # Simple-Wallet
 A Simple Wallet API where you can:
-- A user can create an account and authenticate with a unique phone number and password
-- A user can create many wallets, each with a unique currency
-- User can credit their wallets using paystack
-- A user can transfer from one wallet to another
-- Wallet transfers over N1,000,000 must be approved by an ADMIN user
-- An admin gets monthly payment summaries - capturing all payments made in the system
+- A user can create an account and authenticate with a unique phone number and password.
+- A user can create many wallets, each with a unique currency.
+- User can credit their wallets using paystack.
+- A user can transfer from one wallet to another.
+- Wallet transfers over N1,000,000 must be approved by an ADMIN user.
+- An admin gets monthly payment summaries - capturing all payments made in the system.
 
 
 # creators Mark Bashir.
